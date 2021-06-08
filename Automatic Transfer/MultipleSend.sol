@@ -5,7 +5,7 @@ contract myGame {
     uint public playerCount = 0;
     uint public pot = 0;
     
-    address public dealer;
+    address public payable dealer;
     
     Player[] public playersInGame;
     
@@ -14,7 +14,7 @@ contract myGame {
     enum Level {Novice, Intermediate, Advance}
     
     struct Player{
-        address playerAddress;
+        address payable playerAddress;
         Level PlayerLevel;
         string firstName;
         string lastName;
@@ -61,7 +61,7 @@ contract myGame {
     }
     
     function joinGame(string memory firstName, string memory lastName) payable public greaterThan {
-        if(payable(dealer).send(msg.value)){
+        if(dealer.send(msg.value)){
             addPlayer(firstName, lastName);
             playerCount += 1;
             pot +=25;
@@ -74,7 +74,7 @@ contract myGame {
         for (uint i=0; i<playersInGame.length; i++){
             address currentPlayerAddress = playersInGame[i].playerAddress;
             if(currentPlayerAddress != loserAddress){
-                payable(currentPlayerAddress).transfer(payoutPerWinner);
+                currentPlayerAddress.transfer(payoutPerWinner);
                 startingCondition();
             }
         }
